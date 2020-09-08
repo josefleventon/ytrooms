@@ -1,0 +1,26 @@
+{
+  "name": "ytrooms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index && .exit 1",
+    "dev": "nodemon -e js,json,html index",
+    "start": "node index"
+  },
+  "keywords": [
+    "youtube",
+    "socketio",
+    "rooms"
+  ],
+  "author": "Josef Leventon",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.4"
+  }
+}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>YouTube Rooms</title>
+    <style>
+      #alert {
+        display: none;
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        -moz-apperance: none;
+        border-radius: 6px;
+        height: 8px;
+
+        background-image: -webkit-gradient(
+          linear,
+          left top,
+          right top,
+          color-stop(100%, #e53e3e)
+        );
+
+        background-image: -moz-linear-gradient(
+          left center,
+          #e53e3e 0%,
+          #e53e3e 100%
+        );
+      }
+
+      input[type="range"]::-moz-range-track {
+        border: none;
+        background: none;
+        outline: none;
+      }
+
+      input[type="range"]:focus {
+        outline: none;
+        border: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none !important;
+        background-color: #e53e3e;
+        height: 13px;
+        width: 13px;
+        border-radius: 50%;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        -moz-appearance: none !important;
+        background-color: #e53e3e;
+        border: none;
+        height: 13px;
+        width: 13px;
+        border-radius: 50%;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        background-color: #742a2a;
+        cursor: pointer;
+      }
+
+      input[type="range"]::-moz-range-thumb:hover {
+        background-color: #742a2a;
+        border: none;
+        cursor: pointer;
+      }
+
+      @media (max-width: 700px) {
+        #main {
+          display: none;
+        }
+        #alert {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      class="w-10 h-10 text-gray-500 hover:text-gray-700 cursor-pointer"
+      style="position: absolute; right: 1rem; top: 1rem"
+      id="question-mark"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+        clip-rule="evenodd"
+      />
+    </svg>
+    <div
+      id="alert"
+      class="flex flex-col justify-center items-center text-center min-h-screen min-w-screen"
+    >
+      <p class="font-mono">YT Rooms is not supported on smaller screens.</p>
+    </div>
+    <div
+      class="absolute rounded flex items-center bg-blue-500 text-white text-sm font-bold px-4 py-3"
+      style="top: 1rem; left: 1rem"
+      id="user-alert"
+    >
+      <svg
+        class="fill-current w-4 h-4 mr-2"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+      >
+        <path
+          d="M12.432 0c1.34 0 2.01.912 2.01 1.957 0 1.305-1.164 2.512-2.679 2.512-1.269 0-2.009-.75-1.974-1.99C9.789 1.436 10.67 0 12.432 0zM8.309 20c-1.058 0-1.833-.652-1.093-3.524l1.214-5.092c.211-.814.246-1.141 0-1.141-.317 0-1.689.562-2.502 1.117l-.528-.88c2.572-2.186 5.531-3.467 6.801-3.467 1.057 0 1.233 1.273.705 3.23l-1.391 5.352c-.246.945-.141 1.271.106 1.271.317 0 1.357-.392 2.379-1.207l.6.814C12.098 19.02 9.365 20 8.309 20z"
+        />
+      </svg>
+      <p>A new user has connected.</p>
+    </div>
+    <div
+      id="main"
+      class="bg-gray-200 min-w-screen min-h-screen flex flex-col justify-center items-center text-center"
+    >
+      <div
+        class="flex flex-col md:flex-row sm:w-32 md:w-auto"
+        style="width: 640px"
+      >
+        <input
+          id="link-input"
+          class="w-full md:w-2/3 text-sm bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 my-1 px-4 mx-1 block w-full appearance-none leading-normal"
+          type="link"
+          placeholder="Enter a YouTube video ID here..."
+        />
+        <button
+          id="update-room"
+          class="w-full md:w-1/3 bg-red-600 hover:bg-red-800 text-white font-bold py-2 my-1 px-4 mx-1 rounded"
+        >
+          Update Room
+        </button>
+      </div>
+      <div id="player">
+        <p class="font-mono">Loading...</p>
+      </div>
+      <div class="flex flex-row items-center pt-2" style="width: 640px">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="w-12 h-12 text-red-600 hover:text-red-800 cursor-pointer"
+          id="play"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="w-12 h-12 text-red-600 hover:text-red-800 cursor-pointer"
+          id="pause"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <div id="progress" class="w-full flex flex-row items-center pl-2">
+          <input type="range" min="0" max="100" id="slider" class="w-full" />
+        </div>
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // 1. Initialize the things!
+      var socket = io();
+      document.getElementById("user-alert").style.display = "none";
+      var urlParams = new URLSearchParams(window.location.search);
+
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement("script");
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      var data = { type: "player", state: "play" };
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player("player", {
+          height: "390",
+          width: "640",
+          videoId: urlParams.get("id"),
+          events: {
+            onReady: onPlayerReady,
+          },
+          playerVars: {
+            controls: 0,
+            disablekb: 1,
+            modestbranding: 1,
+            rel: 0,
+            showinfo: 0,
+          },
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        updateProgressBar();
+
+        document.getElementById("play").addEventListener("click", function () {
+          if (player.getCurrentTime() > 0) {
+            data = {
+              type: "player",
+              state: "play",
+              time: player.getCurrentTime(),
+            };
+            socket.emit("event", data);
+          }
+          player.playVideo();
+        });
+
+        document.getElementById("pause").addEventListener("click", function () {
+          data = {
+            type: "player",
+            state: "pause",
+            time: player.getCurrentTime(),
+          };
+          socket.emit("event", data);
+          player.pauseVideo();
+        });
+
+        socket.on("event", function (msg) {
+          console.log(msg);
+          if (msg.type == "video-load") {
+            player.loadVideoById(msg.id);
+            player.playVideo();
+          }
+          if (msg.type == "connection-res") {
+            if (msg.id != player.videoId) player.loadVideoById(msg.id);
+            switch (msg.state) {
+              case "play":
+                player.playVideo();
+                break;
+              case "pause":
+                player.pauseVideo();
+                break;
+            }
+            player.seekTo(msg.time);
+          }
+          if (msg.type == "connection") {
+            if (player.getCurrentTime() > 0) {
+              socket.emit("event", {
+                type: "connection-res",
+                state: "play",
+                time: player.getCurrentTime(),
+                id: player.videoId,
+              });
+            }
+            document.getElementById("user-alert").style.display = "flex";
+            setTimeout(function () {
+              document.getElementById("user-alert").style.display = "none";
+            }, 5000);
+
+            player.playVideo();
+          }
+          if (msg.type == "player") {
+            switch (msg.state) {
+              case "play":
+                player.playVideo();
+                break;
+              case "pause":
+                player.pauseVideo();
+                break;
+            }
+            if (msg.time != player.getCurrentTime()) {
+              player.seekTo(msg.time);
+            }
+          }
+        });
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      //   var done = false;
+      //   function onPlayerStateChange(event) {
+      //     if (event.data == YT.PlayerState.PLAYING && !done) {
+      //       setTimeout(player.stopVideo(), 6000);
+      //       done = true;
+      //     }
+      //   }
+
+      function updateProgressBar() {
+        setInterval(function () {
+          if (!player || !document.getElementById("slider")) {
+            return;
+          }
+
+          document.getElementById("slider").value =
+            (player.getCurrentTime() / player.getDuration()) * 100;
+
+          data.time = player.getCurrentTime();
+          document.getElementById("slider").style.backgroundImage =
+            "-webkit-gradient(linear, left top, right top, " +
+            "color-stop(" +
+            (player.getCurrentTime() / player.getDuration()) * 100 +
+            "%, #c53030), " +
+            "color-stop(" +
+            (player.getCurrentTime() / player.getDuration()) * 100 +
+            "%, #feb2b2)" +
+            ")";
+
+          document.getElementById("slider").style.backgroundImage =
+            "-moz-linear-gradient(left center, #DF7164 0%, #DF7164 " +
+            (player.getCurrentTime() / player.getDuration()) * 100 +
+            "%, #c53030 " +
+            (player.getCurrentTime() / player.getDuration()) * 100 +
+            "%, #feb2b2 100%)";
+        }, 100);
+      }
+
+      document.getElementById("slider").oninput = function () {
+        let newValue = this.value;
+        player.seekTo((newValue / 100) * player.getDuration());
+        data.time = player.getCurrentTime();
+        socket.emit("event", data);
+        this.style.backgroundImage =
+          "-webkit-gradient(linear, left top, right top, " +
+          "color-stop(" +
+          (player.getCurrentTime() / player.getDuration()) * 100 +
+          "%, #c53030), " +
+          "color-stop(" +
+          (player.getCurrentTime() / player.getDuration()) * 100 +
+          "%, #feb2b2)" +
+          ")";
+
+        this.style.backgroundImage =
+          "-moz-linear-gradient(left center, #DF7164 0%, #DF7164 " +
+          (player.getCurrentTime() / player.getDuration()) * 100 +
+          "%, #c53030 " +
+          (player.getCurrentTime() / player.getDuration()) * 100 +
+          "%, #feb2b2 100%)";
+      };
+
+      document
+        .getElementById("update-room")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          socket.emit("event", {
+            type: "video-load",
+            id: document.getElementById("link-input").value,
+          });
+        });
+      document
+        .getElementById("question-mark")
+        .addEventListener("click", function () {
+          alert(
+            "How to use YouTube Rooms:\nTo start playing a video, you'll need to provide the site with the video's ID. A video's ID can be found at the end of its YouTube link.\nExample:\nhttps://www.youtube.com/watch?v=2ZIpFytCSVc\nThe ID of this video is:\n2ZIpFytCSVc"
+          );
+        });
+    </script>
+  </body>
+</html>

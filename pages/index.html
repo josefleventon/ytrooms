@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>YouTube Rooms</title>
+    <style>
+      #alert {
+        display: none;
+      }
+
+      @media (max-width: 700px) {
+        #main {
+          display: none;
+        }
+        #alert {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="alert"
+      class="flex flex-col justify-center items-center text-center min-h-screen min-w-screen"
+    >
+      <p class="font-mono">YT Rooms is not supported on smaller screens.</p>
+    </div>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      class="w-10 h-10 text-gray-500 hover:text-gray-700 cursor-pointer"
+      style="position: absolute; right: 1rem; top: 1rem"
+      id="question-mark"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+        clip-rule="evenodd"
+      />
+    </svg>
+    <div
+      id="main"
+      class="bg-gray-200 min-w-screen min-h-screen flex flex-col justify-center items-center text-center"
+    >
+      <h1 class="text-3xl md:text-6xl font-black leading-none">
+        <span class="text-red-600">YouTube</span> Rooms
+      </h1>
+      <h3 class="text-lg md:text-2xl italic text-gray-600 leading-tight">
+        Watch YouTube videos with your friends!
+      </h3>
+      <form class="flex flex-col md:flex-row pt-4">
+        <input
+          id="link-input"
+          class="w-full md:w-2/3 text-sm bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 my-1 px-4 mx-1 block w-full appearance-none leading-normal"
+          type="link"
+          placeholder="Enter a YouTube video ID here..."
+        />
+        <button
+          id="create-room"
+          class="w-full md:w-1/3 bg-red-600 hover:bg-red-800 text-white font-bold py-2 my-1 px-4 mx-1 rounded"
+        >
+          Create Room
+        </button>
+      </form>
+    </div>
+
+    <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
+    <script>
+      document
+        .getElementById("create-room")
+        .addEventListener("click", function () {
+          open(
+            "/" +
+              uuidv4() +
+              "?id=" +
+              document.getElementById("link-input").value
+          );
+        });
+      document
+        .getElementById("question-mark")
+        .addEventListener("click", function () {
+          alert(
+            "How to use YouTube Rooms:\nTo start playing a video, you'll need to provide the site with the video's ID. A video's ID can be found at the end of its YouTube link.\nExample:\nhttps://www.youtube.com/watch?v=2ZIpFytCSVc\nThe ID of this video is:\n2ZIpFytCSVc"
+          );
+        });
+    </script>
+  </body>
+</html>
