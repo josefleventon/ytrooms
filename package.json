@@ -2,11 +2,11 @@
   "name": "ytrooms",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "nodemon index && .exit 1",
-    "dev": "nodemon -e js,json,html index",
-    "start": "node index"
+    "test": "nodemon server && .exit 1",
+    "dev": "nodemon -e js,json,html server",
+    "start": "node server"
   },
   "keywords": [
     "youtube",
